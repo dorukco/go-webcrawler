@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Go WebCrawler</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Go WebCrawler</h1>
+    <p>Enter a URL to crawl and get page information:</p>
+    
+    {{if .error}}
+        <p class="error">{{.error}}</p>
+    {{end}}
+    
+    {{if .result}}
+        <div class="result-section">
+            <h3>Crawl Results:</h3>
+            <div class="result">
+                <p><strong>URL:</strong> <a href="{{.result.URL}}" target="_blank">{{.result.URL}}</a></p>
+                <p><strong>Status Code:</strong> 
+                    <span class="status-code {{if .result.Success}}success{{else}}error{{end}}">
+                        {{.result.StatusCode}} ({{.result.Status}})
+                    </span>
+                </p>
+                
+                {{if .result.Success}}
+                    <p class="success"><strong>Result:</strong> Successfully crawled!</p>
+                    <p><strong>Page Title:</strong> {{.result.Title}}</p>
+                {{else}}
+                    <p class="error"><strong>Error:</strong> {{.result.Error}}</p>
+                {{end}}
+            </div>
+        </div>
+    {{end}}
+    
+    <form method="POST" action="/submit">
+        <label for="text_input">URL:</label><br>
+        <textarea name="text_input" rows="2" cols="50" placeholder="https://example.com" required>{{.input_value}}</textarea><br><br>
+        <button type="submit">Crawl URL</button>
+    </form>
+</body>
+</html>
