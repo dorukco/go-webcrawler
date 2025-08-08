@@ -84,3 +84,36 @@ func countHeadings(n *html.Node, headings map[string]int) {
 		countHeadings(c, headings)
 	}
 }
+
+func DetectLoginForm(n *html.Node) bool {
+	return hasLoginForm(n)
+}
+
+func hasLoginForm(n *html.Node) bool {
+	if n.Type == html.ElementNode && n.Data == "form" {
+		if isLoginForm(n) {
+			return true
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if hasLoginForm(c) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func isLoginForm(formNode *html.Node) bool {
+	for _, attr := range formNode.Attr {
+		if attr.Key == "id" || attr.Key == "class" {
+			value := strings.ToLower(attr.Val)
+			if strings.Contains(value, "login") || strings.Contains(value, "signin") || strings.Contains(value, "auth") {
+				return true
+			}
+		}
+	}
+
+	return false
+}

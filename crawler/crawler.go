@@ -62,6 +62,9 @@ func CrawlURL(url string) models.CrawlResult {
 	// Extract headings
 	result.Headings = ExtractHeadings(doc)
 
+	// Detect login form
+	result.HasLoginForm = DetectLoginForm(doc)
+
 	result.Success = true
 	return result
 }
