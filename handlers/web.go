@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"go-webcrawler/crawler"
-	"go-webcrawler/models"
 	"net/http"
 	"strings"
 
@@ -36,18 +35,7 @@ func SubmitHandler(c *gin.Context) {
 
 	result := crawler.CrawlURL(textInput)
 
-	printResultToConsole(result)
-
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"result": result,
 	})
-}
-
-func printResultToConsole(result models.CrawlResult) {
-	fmt.Printf("Status Code: %d (%s)\n", result.StatusCode, result.Status)
-	if result.Success {
-		fmt.Printf("Page title: %s\n", result.Title)
-	} else {
-		fmt.Printf("Error: %s\n", result.Error)
-	}
 }

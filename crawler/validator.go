@@ -3,12 +3,21 @@ package crawler
 import (
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 func IsValidURL(url string) bool {
-	urlRegex := `^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$`
+	urlRegex := `^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$`
 	re := regexp.MustCompile(urlRegex)
 	return re.MatchString(url)
+}
+
+func NormalizeURL(url string) string {
+	url = strings.TrimSpace(url)
+	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
+		return url
+	}
+	return "https://" + url
 }
 
 func GetStatusCodeDescription(statusCode int) string {

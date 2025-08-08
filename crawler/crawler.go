@@ -14,15 +14,17 @@ const (
 )
 
 func CrawlURL(url string) models.CrawlResult {
+	normalizedURL := NormalizeURL(url)
+
 	result := models.CrawlResult{
-		URL: url,
+		URL: normalizedURL,
 	}
 
 	client := &http.Client{
 		Timeout: RequestTimeout,
 	}
 
-	resp, err := client.Get(url)
+	resp, err := client.Get(normalizedURL)
 	if err != nil {
 		result.Error = fmt.Sprintf("Network error: %v", err)
 		result.Success = false
@@ -53,6 +55,12 @@ func CrawlURL(url string) models.CrawlResult {
 	} else {
 		result.Title = title
 	}
+
+	// Extract HTML version and DOCTYPE
+	result.HTMLVersion, result.DocType = ExtractHTMLVersion(doc)
+
+	// Extract headings
+	result.Headings = ExtractHeadings(doc)
 
 	result.Success = true
 	return result

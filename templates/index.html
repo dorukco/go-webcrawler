@@ -26,16 +26,23 @@
                 {{if .result.Success}}
                     <p class="success"><strong>Result:</strong> Successfully crawled!</p>
                     <p><strong>Page Title:</strong> {{.result.Title}}</p>
+                    <p><strong>HTML Version:</strong> {{.result.HTMLVersion}}</p>
+                    <p><strong>DOCTYPE:</strong> {{.result.DocType}}</p>
+                    <p><strong>Headings:</strong> 
+                        {{range $level, $count := .result.Headings}}
+                            {{$level}}: {{$count}} 
+                        {{end}}
+                    </p>
                 {{else}}
                     <p class="error"><strong>Error:</strong> {{.result.Error}}</p>
-                {{end}}
+                {{end}}     
             </div>
         </div>
     {{end}}
     
     <form method="POST" action="/submit">
         <label for="text_input">URL:</label><br>
-        <textarea name="text_input" rows="2" cols="50" placeholder="https://example.com" required>{{.input_value}}</textarea><br><br>
+        <textarea name="text_input" rows="2" cols="50" placeholder="https://google.com" required>{{.input_value}}</textarea><br><br>
         <button type="submit">Crawl URL</button>
     </form>
 </body>
