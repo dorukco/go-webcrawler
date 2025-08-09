@@ -65,6 +65,9 @@ func CrawlURL(url string) models.CrawlResult {
 	// Detect login form
 	result.HasLoginForm = DetectLoginForm(doc)
 
+	// Extract link information
+	result.InternalLinks, result.ExternalLinks, result.InaccessibleLinks = ExtractLinks(doc, normalizedURL)
+
 	result.Success = true
 	return result
 }

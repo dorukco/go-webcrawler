@@ -117,3 +117,58 @@ func isLoginForm(formNode *html.Node) bool {
 
 	return false
 }
+
+func ExtractLinks(n *html.Node, baseURL string) (int, int, int) {
+	internal := 0
+	external := 0
+	inaccessible := 0
+
+	countLinks(n, baseURL, &internal, &external, &inaccessible)
+	return internal, external, inaccessible
+}
+
+func countLinks(n *html.Node, baseURL string, internal, external, inaccessible *int) {
+	if n.Type == html.ElementNode && n.Data == "a" {
+		href := getHrefAttribute(n)
+		if href == "" || strings.HasPrefix(href, "#") || strings.HasPrefix(href, "mailto:") {
+			*inaccessible++
+		} else if strings.HasPrefix(href, "http") {
+			if strings.Contains(href, extractDomain(baseURL)) {
+				*internal++
+			} else {
+				*external++
+			}
+		} else {
+			*internal++
+		}
+	}
+
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		countLinks(c, baseURL, internal, external, inaccessible)
+	}
+}
+
+func getHrefAttribute(n *html.Node) string {
+	for _, attr := range n.Attr {
+		if attr.Key == "href" {
+			return strings.TrimSpace(attr.Val)
+		}
+	}
+	return ""
+}
+
+func extractDomain(url string) string {
+	url = strings.ToLower(url)
+	if strings.HasPrefix(url, "https://") {
+		url = url[8:]
+	} else if strings.HasPrefix(url, "http://") {
+		url = url[7:]
+	}
+	if strings.HasPrefix(url, "www.") {
+		url = url[4:]
+	}
+	if idx := strings.IndexAny(url, "/?"); idx != -1 {
+		url = url[:idx]
+	}
+	return url
+}
