@@ -24,7 +24,19 @@ func CrawlURL(url string) models.CrawlResult {
 		Timeout: RequestTimeout,
 	}
 
-	resp, err := client.Get(normalizedURL)
+	req, err := http.NewRequest("GET", normalizedURL, nil)
+	if err != nil {
+		result.Error = fmt.Sprintf("Failed to create request: %v", err)
+		result.Success = false
+		return result
+	}
+
+	// Add headers to mimic a real browser
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+	req.Header.Set("Connection", "keep-alive")
+
+	resp, err := client.Do(req)
 	if err != nil {
 		result.Error = fmt.Sprintf("Network error: %v", err)
 		result.Success = false

@@ -2,13 +2,13 @@
 <html>
 
 <head>
-    <title>Go WebCrawler</title>
+    <title>WebCrawler</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
     <h1>Go WebCrawler</h1>
-    <p>Enter a URL to crawl and get page information:</p>
+    <p>Enter a URL to get page information:</p>
 
     {{if .error}}
     <p class="error">{{.error}}</p>
@@ -16,7 +16,7 @@
 
     {{if .result}}
     <div class="result-section">
-        <h3>Crawl Results:</h3>
+        <h3>Results:</h3>
         <div class="result">
             <p><strong>URL:</strong> <a href="{{.result.URL}}" target="_blank">{{.result.URL}}</a></p>
             <p><strong>Status Code:</strong>
